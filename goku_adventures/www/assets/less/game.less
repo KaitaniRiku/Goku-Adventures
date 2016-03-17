@@ -1,0 +1,333 @@
+@font-face {
+    font-family: 'open_sanslight';
+    src: url('../fonts/opensans/opensans-light-webfont.eot');
+    src: url('../fonts/opensans/opensans-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/opensans/opensans-light-webfont.woff2') format('woff2'),
+         url('../fonts/opensans/opensans-light-webfont.woff') format('woff'),
+         url('../fonts/opensans/opensans-light-webfont.ttf') format('truetype'),
+         url('../fonts/opensans/opensans-light-webfont.svg#open_sanslight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    background-color: #000!important;
+}
+
+h1, h2, h3, h4{
+  font-family: 'ninja_narutoregular'!important;
+}
+
+h1, h2{
+  word-spacing: 10px!important;
+}
+
+h3, h4{
+  word-spacing: 6px!important;
+}
+
+button:focus, a:focus, .btn:focus, input{
+	outline: none !important;
+}
+
+#game{
+  position: absolute;
+  left: 50%;
+  top:50%;
+  margin-left: -600px;
+  margin-top: -325px;
+  width: 1200px;
+  height: 650px;
+  overflow: hidden;
+}
+
+#game-container{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  #game-notice{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 1px #aaa solid;
+    background-image: url('../pictures/sky.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    & h2{
+      color: #fff;
+    }
+
+    & .kid_goku{
+      display: none;
+      position: absolute;
+      top: 3%;
+      left: 50%;
+      margin-left: -150px;
+      width: 300px;
+    }
+
+    & .dragon_ball_logo{
+      display: none;
+      position: absolute;
+      top: 1%;
+      left: 1%;
+      width: 300px;
+    }
+
+    & #btn-wrapper{
+        display: none;
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        margin-left: -150px;
+        width: 300px;
+
+      & button{
+        width: 100%;
+        height: 40px;
+        border-radius: 5px;
+        border: 0px solid transparent;
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  & #game-background{
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-image: url('../pictures/6.png');
+    background-size: 1200px 650px;
+  }
+
+  & #game-header{
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 10%;
+    //border: 1px solid #000;
+
+    & #life-bar{
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      width: 600px;
+      height: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    & #btn-mute{
+      position: absolute;
+      top: 6px;
+      left: 12px;
+      width: 40px;
+      height: 40px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 1);
+    }
+
+    & #btn-play-pause{
+      position: absolute;
+      top: 6px;
+      left: 12px + 45px;
+      width: 40px;
+      height: 40px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 1);
+    }
+
+    & .help-play-pause-btn{
+      position: absolute;
+      color: #fff;
+      top: 17px;
+      left: 12px + 40px + 5px + 45px;
+    }
+  }
+    
+
+  & #game-zone{
+    display: none;
+    position: relative;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 76%;
+    //border: 1px #FFF solid;
+
+    & #goku{
+      position: absolute;
+      left: 50px;
+      top: 200px;
+      width: 100px;
+      height: 100px;
+      //overflow: hidden;
+      -webkit-transition:all 0.2s;
+      -moz-transition:all 0.2s;
+      transition:all 0.2s;
+      //border: 1px solid #000;
+
+      & img{
+        position: absolute;
+      }
+    }
+
+    & #goku-front-block{
+      position: absolute;
+      left: 100px;
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+  
+
+  & #game-helper{
+    display: none;
+    color: #DEDEDE;
+    width: 100%;
+    height: 14%;
+    background-color: #000;
+    border-bottom: 1px #fff solid;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+  }
+}
+
+.goku_cloud_static{
+  top: 0%;
+  left: 5%;
+  width: 94%;
+  height: 100%;
+}
+
+.sizeAndPositionKidGoku{
+  top: -19%;
+  left: -10%;
+  width: 120%;
+  height: 126%; 
+}
+
+.sizeAndPositionAdultGokuKick{
+  top: -19%;
+  left: -10%;
+  width: 120%;
+  height: 126%; 
+}
+
+.sizeAndPositionAdultGoku{
+  top: -10%;
+  width: 103%;
+  height: 110%;
+}
+
+.sizeAndPositionAdultGokuCombo{
+  top: -22%;
+  left: -10px;
+  width: 115%;
+  height: 125%;
+}
+
+.sizeAndPositionKidGokuAttack{
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+@light_red: #C40000;
+@normal_red: #5C0000;
+@dark_red: #000;
+
+
+.negative-energy-ball{
+  display: none;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 3px 0px 45px #FF0000;
+  background: #BB0B0B;
+  background: -webkit-radial-gradient(@light_red, @normal_red, @dark_red);
+  background: -o-radial-gradient(@light_red, @normal_red, @dark_red);
+  background: -moz-radial-gradient(@light_red, @normal_red, @dark_red);
+  background: radial-gradient(@light_red, @normal_red, @dark_red);
+}
+
+.crystal-ball{
+  display: none;
+  position: absolute;
+  width: 45px;
+  top: 0px;
+  left: 0px;
+}
+
+.freiza{
+  display: none;
+  position: absolute;
+  width: 70px;
+  top: 0px;
+  left: 0px;
+}
+
+.baton{
+  display: none;
+  position: absolute;
+  width: 140px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: rgb(204, 15, 8);
+  box-shadow: 0px 0px 4px rgba(232, 61, 61, 1);
+
+}
+
+.kikoho{
+  display: none;
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 0px 15px rgba(47, 123, 214, 0.6);
+}
+
+.yellow_kikoho{
+  display: none;
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #FFF700;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+}
+
+.kamehameha{
+  display: none;
+  position: absolute;
+  width: 50px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 0px 15px rgba(47, 123, 214, 0.6);
+}
+

@@ -1,0 +1,408 @@
+$(document).ready(function(){
+
+
+  /**
+  *
+  * Définition des variables
+  *
+  */
+  var $gameHeader = $('#game-header');
+  var gameHeaderHeight = $gameHeader.height();
+  var $lifeBar = $('#life-bar');
+  var $gameBackground = $('#game-background');
+  var background_speed = 5000;
+  var $btnPlayPause = $('#btn-play-pause');
+  var $gameZone = $('#game-zone');
+  var gameZoneHeight = $gameZone.height();
+  var $goku = $('#goku');
+  var $gokuImg = $('#goku img');
+  var gokuWidth = $goku.width();
+  var gokuHeight = $goku.height();
+  var amplitudeMovement = 60;
+  var limitTop = gameHeaderHeight + amplitudeMovement;
+  var limitBottom = gameHeaderHeight + gameZoneHeight - 30;
+  var insaneEnergyBallsSpeed = 2200;
+  var insaneEnergyBallsHeight = $('.energy-ball').height() + $('.energy-ball-center').height();
+  var insaneEnergyBallsWidth = $('.energy-ball').width() + $('.energy-ball-center').width();
+  var InsaneEnergyBallAppearanceInterval = 2000;
+
+
+  /**
+  *
+  * Trick pour initialiser et clear un Interval depuis des fonctions
+  *
+  */
+  var varInitialiser = {
+    initialize: function(newValue){
+      intervalId = newValue;
+    }
+  }
+
+
+  /**
+  *
+  * Actions claviers
+  *
+  */
+  $(document).on('keydown', function(e){
+
+    /**
+    *
+    * Déplacements verticaux de sangoku
+    *
+    */
+    if(!$goku.hasClass('is_attacking')){
+      var gokuLeftLocation = $goku.offset().left;
+      var gokuTopLocation = $goku.offset().top;
+      var gokuRightLocation = gokuLeftLocation + gokuWidth;
+      var gokuBottomLocation = gokuTopLocation + gokuHeight;
+
+      controlCharacterMovement(e, 38, 'top', gokuTopLocation > limitTop, '-='+amplitudeMovement+'px');
+      controlCharacterMovement(e, 40, 'top', gokuBottomLocation < limitBottom, '+='+amplitudeMovement+'px');
+    }
+
+
+    /**
+    *
+    * Activer le déplacement à grande vitesse de sangoku (effet défilement background)
+    *
+    */
+    if(e.which === 39){
+      if(!$gameBackground.hasClass('is_moving')){
+        clearInterval(intervalId);
+        highSpeedMovingBackground($gameBackground, 600);
+        $gameBackground.addClass('is_moving');
+      }
+    }
+    /**
+    *
+    * Arrêter le déplacement à grande vitesse de sangoku (stop effet défilement background)
+    *
+    */
+    if(e.which === 37){
+      if($gameBackground.hasClass('is_moving')){
+        $gameBackground.stop();
+        varInitialiser.initialize(setInterval(movingBackground, 50));
+        $gameBackground.removeClass('is_moving');
+      }
+    }
+
+
+    /**
+    *
+    * Attaques de sangoku
+    *
+    */
+    e.which == 65 && !$goku.hasClass('is_attacking') && characterAttack('baton', $('.baton'));
+    e.which == 90 && !$goku.hasClass('is_attacking') && characterAttack('boule', $('.kikoho'));
+    e.which == 69 && !$goku.hasClass('is_attacking') && characterAttack('rayon', $('.kamehameha'));
+    e.which == 82 && !$goku.hasClass('is_attacking') && characterAttack('combo', $('.yellow_kikoho'));
+  });
+
+
+  /**
+  *
+  * Lancement du défilement normal du background au chargement de la page
+  *
+  */
+  varInitialiser.initialize(setInterval(movingBackground, 50));
+  
+
+  /**
+  *
+  * Fonction pour animation du background (mode normal)
+  *
+  */
+  function movingBackground(){
+    $gameBackground.animate({'marginLeft' : '-=12'}, 50, 'linear');
+    $gameBackground.css('width', '+=1200px');
+  }
+
+
+  /**
+  *
+  * Fonction pour animation du background lors du déplacement de Sangoku (mode grande vitesse)
+  *
+  */
+  function highSpeedMovingBackground($element, fast){
+    $element.animate({'marginLeft' : '-=1200'}, fast, 'linear', function(){
+      $gameBackground.css('width', '+=1200px');
+      highSpeedMovingBackground($element, fast);
+    })
+  }
+
+
+  /**
+  *
+  * Fonction pour exécuter les déplacements verticaux de Sangoku
+  *
+  */
+  function controlCharacterMovement(eve, keyCode, position, positionLimit, amplitude){
+    if(eve.which == keyCode){
+      if(positionLimit){
+        $goku.css(position, amplitude);
+      }
+    }
+  }
+
+
+  /**
+  *
+  * Déclenchement de la rafale de boule d'energie négative
+  *
+  */
+  InsaneEnergyBallAppearance = setInterval(rafaleKikoho, InsaneEnergyBallAppearanceInterval);
+
+
+  /**
+  *
+  * Mise en Pause / Play du jeu
+  *
+  */
+  $btnPlayPause.on('click', function(){
+    var icon = $(this).find('i');
+    if(icon.hasClass('glyphicon glyphicon-pause')){
+      document.querySelector('#ost-dbz').pause();
+      actionPause(icon);
+    } else {
+      actionPlay(icon);
+      document.querySelector('#ost-dbz').play();
+    }
+  });
+
+
+  /**
+  *
+  * Déclenchement de la détection des collisions
+  *
+  */
+  setInterval(collision, 10);
+
+
+  /**
+  *
+  * Extension Jquery permettant de remplacer une class
+  *
+  */
+  $.fn.replaceClass = function(oldClass, newClass){
+    return this.each(function(){
+      $(this).removeClass(oldClass).addClass(newClass);
+    })
+  }
+
+
+  /**
+  *
+  * Extension Jquery permettant de donner un effet de levitation à un objet
+  *
+  */
+  $.fn.levitate = function(extend){
+    return this.each(function(){
+      $(this).animate({'top':'+='+top+'px'}, 800);
+      $(this).animate({'top':'-='+top+'px'}, 800, function(){
+        $(this).levitate(top);
+      });
+    })
+  }
+
+  
+
+  
+  /**
+  *
+  * Déclenchement de l'attaque de Sangoku en fonction de la touche préssée
+  *
+  */
+  function characterAttack(attackType, $attackElement){
+    var gokuRightLocation = $goku.offset().left + gokuWidth;
+    var gokuTopLocation = $goku.offset().top;
+
+    /**
+    * On créer une class indiquer qu'une attaque est en cours
+    */
+    $goku.addClass('is_attacking');
+
+    /**
+    * On génère un "élement d'attaque" près de sangoku
+    */
+    var attack = cloneElement($attackElement, $goku);
+
+
+    /**
+    * On position "l'élement d'attaque à l'endroit précis désiré"
+    */
+    switch(attackType) {
+      case 'rayon':
+        atkLocation = {'left' : gokuWidth};
+        break;
+      case 'boule':
+        atkLocation = {'top' : 30, 'left' : gokuWidth - 15};
+        break;
+      case 'combo':
+        atkLocation = {'top' : 35, 'left' : gokuWidth + 5};
+        break;
+      case 'baton':
+        atkLocation = {'top' : 36, 'left' : gokuWidth - 55};
+        break;
+    }
+    attack.css(atkLocation);
+
+
+    /**
+    * On exécute l'animation pour produire l'effet visuel de l'attaque
+    */
+    if(attackType == 'rayon'){
+
+      animateGokuAttack('sizeAndPositionAdultGoku', 'ssjgoku.gif', attack, {'width' : '1600'}, 1000, false);
+
+
+     
+
+    } else if(attackType == 'combo') {
+
+      animateGokuAttack('sizeAndPositionAdultGokuCombo', 'goku_punches.gif', attack, {'width' : '75', 'height' : '75', 'top' : '-=35px', 'left':'-=35px'}, 900, 400);
+
+      
+
+    } else if(attackType == 'boule')  {
+      animateGokuAttack('sizeAndPositionAdultGokuKick', 'goku_kick.gif', attack, {'width' : '60', 'height' : '60', 'top' : '-=5px', 'left':'-=5px'}, 300, false);
+
+      
+    } else {
+      attack.animate({'width' : '1600'}, 800, 'swing', function(){
+        $(this).remove();
+        $goku.removeClass('is_attacking');
+      });
+    }
+  }
+
+  function animateGokuAttack(classParamPerso, imgPersoPath, elemAttack, animationParams, animationSpeed, delay){
+    $gokuImg.replaceClass('sizeAndPositionKidGoku', classParamPerso).attr('src', 'www/assets/pictures/' + imgPersoPath);
+    elemAttack[!delay ? 'noop' : 'delay'](delay).animate(animationParams, animationSpeed, 'swing', function(){
+      if(classParamPerso === 'sizeAndPositionAdultGokuKick'){
+        elemAttack.animate({'left' : '1600'}, 850, 'swing', function(){
+          $(this).remove();
+          $goku.removeClass('is_attacking');
+          $gokuImg.replaceClass(classParamPerso, 'sizeAndPositionKidGoku').attr('src', 'www/assets/pictures/goku_cloud.gif');
+        });
+      } else {
+        $(this).remove();
+        $goku.removeClass('is_attacking');
+        $gokuImg.replaceClass(classParamPerso, 'sizeAndPositionKidGoku').attr('src', 'www/assets/pictures/goku_cloud.gif');
+      }
+    })
+
+  }
+
+  $.fn.noop = function () {
+    return this;
+  };
+
+
+  /*==================================
+                      Fonctions Play/Pause
+  ==================================*/
+  function actionPause(icon){
+    icon.replaceClass('glyphicon glyphicon-pause', 'glyphicon glyphicon-play');
+    clearInterval(InsaneEnergyBallAppearance);
+    $.each($('.energy-ball'), function(key, value){
+      bl = $(this).css('left');
+      bt = $(this).css('top');
+      $(this).stop().fadeOut();
+    });
+  }
+
+  function actionPlay(icon){
+    icon.replaceClass('glyphicon glyphicon-play', 'glyphicon glyphicon-pause');
+    InsaneEnergyBallAppearance = setInterval(rafaleKikoho, InsaneEnergyBallAppearanceInterval);
+  }
+
+  /*==================================
+              Fonctions Attaques "ennemy"
+  ==================================*/
+  function rafaleKikoho(){
+    var ball = cloneElement($('.energy-ball:last'), $gameZone);
+    var BallPositionTop = Math.floor(Math.random() * (gameZoneHeight - insaneEnergyBallsHeight));
+
+    ball.css({'top' : BallPositionTop, 'left' : '100%'});
+
+    ball.animate({'left' : '-400px'}, insaneEnergyBallsSpeed, 'swing', function(){
+      $(this).remove();
+    });
+  }
+
+  function cloneElement($element, area){
+    return $element.clone().show().appendTo(area);
+  }
+
+  /*==================================
+                      Fonctions Collision
+  ==================================*/
+  function collision(){
+    $.each($('.energy-ball'), function(){
+      var gokuLeftLocation = $goku.offset().left;
+      var gokuTopLocation = $goku.offset().top;
+      var ballLeftLocation = $(this).offset().left;
+      var ballTopLocation = $(this).offset().top;
+      var ballHeight = insaneEnergyBallsHeight;
+      var ballBottomLocation = ballTopLocation + insaneEnergyBallsHeight;
+      var gokuRightLocation = gokuLeftLocation + gokuWidth - 15;
+      var gokuBottomLocation = gokuTopLocation + gokuHeight;
+
+      if(gokuRightLocation > ballLeftLocation && gokuTopLocation < ballBottomLocation && gokuBottomLocation > ballTopLocation){
+        collisionEffect($(this));
+      }
+    });
+  }
+
+  function collisionEffect(element){
+    var gokuLeftLocation = $goku.offset().left;
+    
+    element.remove();
+
+    $lifeBar.animate({'width' : '-=50px'}, 300);
+
+    if($lifeBar.width() < 1){
+      $lifeBar.animate({'width' : '800px'}, 600);
+    }
+  }
+
+
+  function gravity(){
+    var elemAffectByGravity = $('.affect-by-gravity');
+    var obstacles = $('.obstacle');
+
+    $.each(elemAffectByGravity, function() {
+      var elem = $(this);
+      var elemTopLocation = elem.offset().top;
+      var elemLeftLocation = elem.offset().left;
+      var elemHeight = elem.height();
+      var elemWidth = elem.width();
+      var conflicts = false;
+
+      $.each(obstacles, function() {
+        var obstacle = $(this);
+        var obstacleTopLocation = obstacle.offset().top;
+        var obstacleLeftLocation = obstacle.offset().left;
+        var obstacleHeight = obstacle.height();
+        var obstacleWidth = obstacle.width();
+
+        if((elemLeftLocation < obstacleLeftLocation + obstacleWidth) && (elemLeftLocation + elemWidth > obstacleLeftLocation)) {
+          if((elemTopLocation + elemHeight > obstacleTopLocation)) {
+            conflicts = true;
+          }
+        }
+      });
+
+      if(!conflicts) {
+        elem.animate({'bottom' : "90px"}, 150);
+      } else {
+        elem.stop(true);
+      }
+    });
+  }
+
+
+
+
+});
