@@ -2,8 +2,6 @@
 
 A 2D game based on Dragon Ball, developed using JQUERY and JQUERY-UI
 
-NB: this project is not done yet
-
 ### Lien demo
 
 http://vacherot.etudiant-eemi.com/perso/dossier/malcolm0810/private/s2705/js_games/goku_adventures/
