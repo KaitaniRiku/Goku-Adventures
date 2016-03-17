@@ -6,9 +6,11 @@ A 2D game based on Dragon Ball, developed using JQUERY and JQUERY-UI
 
 http://vacherot.etudiant-eemi.com/perso/dossier/malcolm0810/private/s2705/js_games/goku_adventures/
 
+=======
+
 ### Description
 
-Keyboard commands:
+#### Keyboard commands:
 
 - `a`: attack with the magic baton
 - `z`: attack with a kicked energy ball
@@ -22,13 +24,14 @@ Keyboard commands:
 - `mute-button`: mute the music
 
 
-Goal:
+#### Goal:
 
 You are Sangoku, and for the moment, you have to 
 - Avoid "negativeEnergyBalls" (the red ones)
 - Kill the "freezers" (ennemies) with the "one-hand-kamehameha" using key `e`
 - Catch all the "Crystal ball" (the orange ones)
 
+=======
 
 ### Location of files
 
